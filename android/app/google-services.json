@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "84373395446",
+    "project_id": "agenda-1bf5b",
+    "storage_bucket": "agenda-1bf5b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:84373395446:android:db3e04d94d42eb192c99d7",
+        "android_client_info": {
+          "package_name": "mgbarbieri20.agenda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "84373395446-m9982p8vgd062iqjekopm645al91f1qb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTknJHgvqO1MOcAneqRlYvF10RMyoLxZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "84373395446-m9982p8vgd062iqjekopm645al91f1qb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

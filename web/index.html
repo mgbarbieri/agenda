@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -26,7 +27,33 @@
   <title>agenda</title>
   <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
+
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-analytics.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    var firebaseConfig = {
+      apiKey: "AIzaSyBBC46geTI9OPm7yHaihHDDKW2Gx-kaJOM",
+      authDomain: "agenda-1bf5b.firebaseapp.com",
+      projectId: "agenda-1bf5b",
+      storageBucket: "agenda-1bf5b.appspot.com",
+      messagingSenderId: "84373395446",
+      appId: "1:84373395446:web:6a9ff45436419bcf2c99d7",
+      measurementId: "G-GQE0D60CQ5"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
+
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
@@ -95,4 +122,5 @@
     }
   </script>
 </body>
+
 </html>
