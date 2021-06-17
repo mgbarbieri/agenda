@@ -17,6 +17,7 @@ class App extends StatelessWidget {
       title: 'Agenda',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        backgroundColor: Colors.blue,
       ),
       home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
