@@ -1,18 +1,82 @@
+import 'dart:async';
+
+import 'package:agenda/models/auth_data.dart';
 import 'package:agenda/widgets/auth_form.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class AuthScreen extends StatelessWidget {
+class AuthScreen extends StatefulWidget {
+  @override
+  _AuthScreenState createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> {
+  final _auth = FirebaseAuth.instance;
+  final GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
+  bool _isLoading = false;
+
+  Future<void> _handleSubmit(AuthData authData) async {
+    UserCredential userCredential;
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      if (authData.isLogin) {
+        userCredential = await _auth.signInWithEmailAndPassword(
+            email: authData.email!.trim(), password: authData.password!);
+      } else {
+        userCredential = await _auth.createUserWithEmailAndPassword(
+          email: authData.email!.trim(),
+          password: authData.password!,
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      final msg = e.message ?? 'Ocorreu um erro! verifique suas credenciais!';
+      _scaffoldKey.currentState!.showSnackBar(
+        SnackBar(
+          content: Text(msg),
+          backgroundColor: Theme.of(context).errorColor,
+        ),
+      );
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AuthForm(),
-            ],
+    return ScaffoldMessenger(
+      key: _scaffoldKey,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Stack(children: [
+                  AuthForm(_handleSubmit),
+                  if (_isLoading)
+                    Positioned.fill(
+                      child: Container(
+                        margin: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                          color: Color.fromRGBO(0, 0, 0, 0.5),
+                        ),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    ),
+                ]),
+              ],
+            ),
           ),
         ),
       ),

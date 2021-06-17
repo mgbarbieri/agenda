@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
 class AuthForm extends StatefulWidget {
+  final void Function(AuthData authData) onSubmit;
+
+  AuthForm(this.onSubmit);
   @override
   _AuthFormState createState() => _AuthFormState();
 }
@@ -14,12 +17,16 @@ class _AuthFormState extends State<AuthForm> {
 
   _submit() {
     bool isValid = _formKey.currentState!.validate();
+    FocusScope.of(context).unfocus();
 
-    if (isValid) {}
+    if (isValid) {
+      widget.onSubmit(_authData);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    FocusNode textFocusNode = new FocusNode();
     return Center(
       child: Card(
         margin: EdgeInsets.all(20),
@@ -37,6 +44,8 @@ class _AuthFormState extends State<AuthForm> {
                         decoration: InputDecoration(
                           labelText: 'Nome',
                         ),
+                        initialValue: _authData.name,
+                        onChanged: (value) => _authData.name = value,
                         validator: (value) {
                           if (value == null || value.trim().length < 4) {
                             return 'Nome deve ter no mínimo 4 caracteres';
@@ -57,6 +66,10 @@ class _AuthFormState extends State<AuthForm> {
                           : 'Forneça um e-mail válido',
                     ),
                     TextFormField(
+                      onEditingComplete: _authData.isLogin
+                          ? null
+                          : () => FocusScope.of(context)
+                              .requestFocus(textFocusNode),
                       obscureText: _pwVisible ? false : true,
                       textInputAction: _authData.isLogin
                           ? TextInputAction.done
@@ -88,6 +101,7 @@ class _AuthFormState extends State<AuthForm> {
                     ),
                     if (_authData.isSignup)
                       TextFormField(
+                        focusNode: textFocusNode,
                         keyboardType: TextInputType.text,
                         obscureText: true,
                         textInputAction: TextInputAction.done,

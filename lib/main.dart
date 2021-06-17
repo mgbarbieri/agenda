@@ -21,7 +21,7 @@ class App extends StatelessWidget {
       ),
       home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (ctx, snapshot) {
+          builder: (ctx, AsyncSnapshot<User?> snapshot) {
             if (snapshot.hasData) {
               return ListingsScreen();
             } else {
