@@ -1,7 +1,7 @@
-import 'package:agenda/views/listings_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'views/listings_screen.dart';
 import 'views/auth_screen.dart';
 
 void main() async {
@@ -23,7 +23,7 @@ class App extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (ctx, AsyncSnapshot<User?> snapshot) {
             if (snapshot.hasData) {
-              return ListingsScreen();
+              return ListingsScreen(snapshot.data);
             } else {
               return AuthScreen();
             }
