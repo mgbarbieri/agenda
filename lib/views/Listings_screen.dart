@@ -1,21 +1,39 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ListingsScreen extends StatefulWidget {
   final User? user;
 
-  ListingsScreen(User? this.user);
+  ListingsScreen(this.user);
   @override
   _ListingsScreenState createState() => _ListingsScreenState();
 }
 
 class _ListingsScreenState extends State<ListingsScreen> {
+  DateTime date = DateTime.now();
+
+  Future<void> pickDate(BuildContext context) async {
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(DateTime.now().year + 1),
+    );
+
+    if (selectedDate == null) return;
+
+    setState(() {
+      date = selectedDate;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Agenda'),
+          title: Center(child: Text(DateFormat('dd-MMM-yyyy').format(date))),
           actions: [],
         ),
         drawer: SafeArea(
@@ -57,14 +75,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
                 ElevatedButton.icon(
                   icon: Icon(Icons.date_range),
                   label: Text('Selecionar data'),
-                  onPressed: () {
-                    Future<DateTime?> selectDate = showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(Duration(days: 365)),
-                    );
-                  },
+                  onPressed: () => pickDate(context),
                 )
               ],
             )),
