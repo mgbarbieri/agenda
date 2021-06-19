@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 
 class Consult extends StatelessWidget {
   final String date;
+  final String? docId;
 
-  Consult(this.date);
+  Consult(this.date, this.docId);
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: FirebaseFirestore.instance
+            .collection('people')
+            .doc(docId)
             .collection(date)
             .orderBy('time')
             .snapshots(),

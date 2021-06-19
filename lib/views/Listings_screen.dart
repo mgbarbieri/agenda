@@ -1,4 +1,5 @@
 import 'package:agenda/widgets/consult.dart';
+import 'package:agenda/widgets/doc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +14,9 @@ class ListingsScreen extends StatefulWidget {
 
 class _ListingsScreenState extends State<ListingsScreen> {
   DateTime date = DateTime.now();
+  String doc = '';
+  String? docId;
+  bool _agenda = false;
 
   Future<void> pickDate(BuildContext context) async {
     final DateTime? selectedDate = await showDatePicker(
@@ -29,6 +33,14 @@ class _ListingsScreenState extends State<ListingsScreen> {
     });
   }
 
+  callback(newDocId, newDoc) {
+    setState(() {
+      docId = newDocId;
+      doc = newDoc;
+      _agenda = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
@@ -37,7 +49,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
           title: Center(
             child: Column(
               children: [
-                Text('Dr...'),
+                Text(doc),
                 Text(DateFormat('dd-MMM-yyyy').format(date)),
               ],
             ),
@@ -59,15 +71,22 @@ class _ListingsScreenState extends State<ListingsScreen> {
                   ),
                   ListTile(
                     leading: Icon(Icons.list),
-                    title: Text('Lista'),
+                    title: Text('Doutores'),
                     subtitle: Text('Listas'),
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        _agenda = false;
+                      });
+                      Navigator.pop(context);
+                    },
                   ),
                   ListTile(
                     leading: Icon(Icons.favorite),
                     title: Text('Favoritos'),
                     subtitle: Text('favoritos'),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                   ),
                   ListTile(
                     leading: Icon(Icons.logout),
@@ -86,9 +105,14 @@ class _ListingsScreenState extends State<ListingsScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Expanded(
-                child: Consult(DateFormat('dd-MMM-yyyy').format(date)),
-              ),
+              _agenda
+                  ? Expanded(
+                      child: Consult(
+                          DateFormat('dd-MMM-yyyy').format(date), docId),
+                    )
+                  : Expanded(
+                      child: Doc(callback),
+                    ),
               ElevatedButton.icon(
                 icon: Icon(Icons.date_range),
                 label: Text('Selecionar data'),
