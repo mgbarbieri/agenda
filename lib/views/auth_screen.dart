@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:agenda/models/auth_data.dart';
 import 'package:agenda/widgets/auth_form.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -30,6 +31,16 @@ class _AuthScreenState extends State<AuthScreen> {
           email: authData.email!.trim(),
           password: authData.password!,
         );
+
+        final userData = {
+          'name': authData.name,
+          'email': authData.email,
+        };
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set(userData);
       }
     } on FirebaseAuthException catch (e) {
       final msg = e.message ?? 'Ocorreu um erro! verifique suas credenciais!';

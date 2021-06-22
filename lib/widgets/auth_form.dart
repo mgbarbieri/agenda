@@ -41,6 +41,7 @@ class _AuthFormState extends State<AuthForm> {
                       TextFormField(
                         textInputAction: TextInputAction.next,
                         key: ValueKey('name'),
+                        textCapitalization: TextCapitalization.words,
                         decoration: InputDecoration(
                           labelText: 'Nome',
                         ),
