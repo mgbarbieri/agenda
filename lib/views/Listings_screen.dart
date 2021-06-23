@@ -1,5 +1,6 @@
 import 'package:agenda/widgets/consult.dart';
 import 'package:agenda/widgets/doc.dart';
+import 'package:agenda/widgets/pet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -16,7 +17,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
   DateTime date = DateTime.now();
   String doc = '';
   String? docId;
-  bool _agenda = false;
+  String? _drawer;
 
   Future<void> pickDate(BuildContext context) async {
     final DateTime? selectedDate = await showDatePicker(
@@ -37,8 +38,22 @@ class _ListingsScreenState extends State<ListingsScreen> {
     setState(() {
       docId = newDocId;
       doc = newDoc;
-      _agenda = true;
+      _drawer = 'con';
     });
+    Consult(DateFormat('dd-MMM-yyyy').format(date), docId);
+  }
+
+  Widget drawerSelector(String? drawer) {
+    switch (drawer) {
+      case 'vet':
+        return Doc(callback);
+      case 'pet':
+        return Pet(widget.user);
+      case 'con':
+        return Consult(DateFormat('dd-MMM-yyyy').format(date), docId);
+      default:
+        return Consult(DateFormat('dd-MMM-yyyy').format(date), docId);
+    }
   }
 
   @override
@@ -46,13 +61,16 @@ class _ListingsScreenState extends State<ListingsScreen> {
     return ScaffoldMessenger(
       child: Scaffold(
         appBar: AppBar(
-          title: Center(
-            child: Column(
-              children: [
-                Text(doc),
-                Text(DateFormat('dd-MMM-yyyy').format(date)),
-              ],
-            ),
+          centerTitle: true,
+          title: Column(
+            children: [
+              Text(
+                doc,
+              ),
+              Text(
+                DateFormat('dd-MMM-yyyy').format(date),
+              ),
+            ],
           ),
           actions: [],
         ),
@@ -72,19 +90,22 @@ class _ListingsScreenState extends State<ListingsScreen> {
                   ListTile(
                     leading: Icon(Icons.list),
                     title: Text('Doutores'),
-                    subtitle: Text('Listas'),
+                    subtitle: Text('Veterinários'),
                     onTap: () {
                       setState(() {
-                        _agenda = false;
+                        _drawer = 'vet';
                       });
                       Navigator.pop(context);
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.favorite),
-                    title: Text('Favoritos'),
-                    subtitle: Text('favoritos'),
+                    leading: Icon(Icons.pets),
+                    title: Text('Pets'),
+                    subtitle: Text(''),
                     onTap: () {
+                      setState(() {
+                        _drawer = 'pet';
+                      });
                       Navigator.pop(context);
                     },
                   ),
@@ -105,14 +126,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              _agenda
-                  ? Expanded(
-                      child: Consult(
-                          DateFormat('dd-MMM-yyyy').format(date), docId),
-                    )
-                  : Expanded(
-                      child: Doc(callback),
-                    ),
+              Expanded(child: drawerSelector(_drawer)),
               ElevatedButton.icon(
                 icon: Icon(Icons.date_range),
                 label: Text('Selecionar data'),
