@@ -23,9 +23,39 @@ class _PetFormState extends State<PetForm> {
   final PetData _petData = PetData();
 
   _takePicture() async {
+    ImageSource? src;
     final ImagePicker _picker = ImagePicker();
+
+    await showModalBottomSheet(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      context: context,
+      builder: (ctx) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: Icon(Icons.camera_alt),
+            title: Text('Camera'),
+            onTap: () {
+              src = ImageSource.camera;
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.photo_album),
+            title: Text('Galeria'),
+            onTap: () {
+              src = ImageSource.gallery;
+              Navigator.pop(context);
+            },
+          )
+        ],
+      ),
+    );
+
+    if (src == null) return;
+
     PickedFile? imageFile = await _picker.getImage(
-      source: ImageSource.camera,
+      source: src!,
       maxWidth: 600,
     );
 

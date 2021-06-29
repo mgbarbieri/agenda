@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class Pets extends StatelessWidget {
   final User? user;
-  Pets(User? this.user);
+  Pets(this.user);
 
   @override
   Widget build(BuildContext context) {
