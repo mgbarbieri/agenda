@@ -1,7 +1,11 @@
+import 'package:agenda/models/pet_data.dart';
 import 'package:agenda/widgets/consult.dart';
 import 'package:agenda/widgets/doc.dart';
 import 'package:agenda/widgets/pet.dart';
+import 'package:agenda/widgets/pet_form.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -46,14 +50,65 @@ class _ListingsScreenState extends State<ListingsScreen> {
   Widget drawerSelector(String? drawer) {
     switch (drawer) {
       case 'vet':
+        setState(() {
+          _drawer = drawer;
+        });
         return Doc(callback);
       case 'pet':
-        return Pet(widget.user);
+        setState(() {
+          _drawer = drawer;
+        });
+        return Pets(widget.user);
       case 'con':
+        setState(() {
+          _drawer = drawer;
+        });
         return Consult(DateFormat('dd-MMM-yyyy').format(date), docId);
+      case 'addPet':
+        setState(() {
+          _drawer = drawer;
+        });
+        return PetForm(_handleSubmit);
       default:
+        setState(() {
+          _drawer = drawer;
+        });
         return Consult(DateFormat('dd-MMM-yyyy').format(date), docId);
     }
+  }
+
+  Future<void> _handleSubmit(PetData petData) async {
+    final String? url;
+    try {
+      if (petData.image != null) {
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('pet_images')
+            .child(widget.user!.uid + '.jpg');
+
+        await ref.putFile(petData.image!);
+        url = await ref.getDownloadURL();
+      } else {
+        url = null;
+      }
+
+      final pet = {
+        'owner': widget.user!.uid,
+        'imgUrl': url,
+        'name': petData.name,
+        'sex': petData.sex,
+        'specie': petData.specie,
+        'race': petData.race,
+        'birthDate': petData.birthDate,
+        'history': petData.history,
+      };
+
+      await FirebaseFirestore.instance.collection('pets').doc().set(pet);
+    } catch (e) {}
+
+    setState(() {
+      _drawer = 'pet';
+    });
   }
 
   @override
@@ -64,9 +119,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
           centerTitle: true,
           title: Column(
             children: [
-              Text(
-                doc,
-              ),
+              if (_drawer == 'vet' || _drawer == 'con') Text(doc),
               Text(
                 DateFormat('dd-MMM-yyyy').format(date),
               ),
@@ -127,11 +180,17 @@ class _ListingsScreenState extends State<ListingsScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Expanded(child: drawerSelector(_drawer)),
-              ElevatedButton.icon(
-                icon: Icon(Icons.date_range),
-                label: Text('Selecionar data'),
-                onPressed: () => pickDate(context),
-              ),
+              if (_drawer != 'addPet')
+                ElevatedButton.icon(
+                    onPressed: _drawer == 'pet'
+                        ? () => drawerSelector('addPet')
+                        : () => pickDate(context),
+                    icon: _drawer == 'pet'
+                        ? Icon(Icons.pets)
+                        : Icon(Icons.date_range),
+                    label: _drawer == 'pet'
+                        ? Text('Adicionar um pet')
+                        : Text('Selecionar data'))
             ],
           ),
         ),

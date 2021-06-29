@@ -34,108 +34,107 @@ class _AuthFormState extends State<AuthForm> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    if (_authData.isSignup)
-                      TextFormField(
-                        textInputAction: TextInputAction.next,
-                        key: ValueKey('name'),
-                        textCapitalization: TextCapitalization.words,
-                        decoration: InputDecoration(
-                          labelText: 'Nome',
-                        ),
-                        initialValue: _authData.name,
-                        onChanged: (value) => _authData.name = value,
-                        validator: (value) {
-                          if (value == null || value.trim().length < 4) {
-                            return 'Nome deve ter no mínimo 4 caracteres';
-                          }
-                          return null;
-                        },
-                      ),
+              key: _formKey,
+              child: Column(
+                children: [
+                  if (_authData.isSignup)
                     TextFormField(
-                      keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
-                      key: ValueKey('email'),
+                      key: ValueKey('name'),
+                      textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
-                        labelText: 'E-mail',
+                        labelText: 'Nome',
                       ),
-                      onChanged: (value) => _authData.email = value,
-                      validator: (value) => EmailValidator.validate(value!)
-                          ? null
-                          : 'Forneça um e-mail válido',
-                    ),
-                    TextFormField(
-                      onEditingComplete: _authData.isLogin
-                          ? null
-                          : () => FocusScope.of(context)
-                              .requestFocus(textFocusNode),
-                      obscureText: _pwVisible ? false : true,
-                      textInputAction: _authData.isLogin
-                          ? TextInputAction.done
-                          : TextInputAction.next,
-                      key: ValueKey('password'),
-                      decoration: InputDecoration(
-                        labelText: 'Senha',
-                        suffixIcon: IconButton(
-                          alignment: Alignment.bottomRight,
-                          onPressed: () {
-                            setState(() {
-                              _pwVisible = !_pwVisible;
-                            });
-                          },
-                          icon: Icon(
-                            _pwVisible
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                        ),
-                      ),
-                      onChanged: (value) => _authData.password = value,
+                      initialValue: _authData.name,
+                      onChanged: (value) => _authData.name = value,
                       validator: (value) {
-                        if (value == null || value.trim().length < 7) {
-                          return 'Senha deve ter no mínimo 7 caracteres';
+                        if (value == null || value.trim().length < 4) {
+                          return 'Nome deve ter no mínimo 4 caracteres';
                         }
                         return null;
                       },
                     ),
-                    if (_authData.isSignup)
-                      TextFormField(
-                        focusNode: textFocusNode,
-                        keyboardType: TextInputType.text,
-                        obscureText: true,
-                        textInputAction: TextInputAction.done,
-                        key: ValueKey('passwordConfirmation'),
-                        decoration: InputDecoration(
-                          labelText: 'Confirmar Senha',
-                        ),
-                        validator: (value) {
-                          if (value == null || value != _authData.password) {
-                            return 'Senhas não conferem';
-                          }
-                          return null;
-                        },
-                      ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _submit,
-                      child: Text(_authData.isLogin ? 'Entrar' : 'Cadastrar'),
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    key: ValueKey('email'),
+                    decoration: InputDecoration(
+                      labelText: 'E-mail',
                     ),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _authData.toggleMode();
-                        });
-                      },
-                      child: Text(
-                        _authData.isLogin
-                            ? 'Criar nova conta'
-                            : 'Já possui uma conta?',
+                    onChanged: (value) => _authData.email = value,
+                    validator: (value) => EmailValidator.validate(value!)
+                        ? null
+                        : 'Forneça um e-mail válido',
+                  ),
+                  TextFormField(
+                    onEditingComplete: _authData.isLogin
+                        ? null
+                        : () =>
+                            FocusScope.of(context).requestFocus(textFocusNode),
+                    obscureText: _pwVisible ? false : true,
+                    textInputAction: _authData.isLogin
+                        ? TextInputAction.done
+                        : TextInputAction.next,
+                    key: ValueKey('password'),
+                    decoration: InputDecoration(
+                      labelText: 'Senha',
+                      suffixIcon: IconButton(
+                        alignment: Alignment.bottomRight,
+                        onPressed: () {
+                          setState(() {
+                            _pwVisible = !_pwVisible;
+                          });
+                        },
+                        icon: Icon(
+                          _pwVisible ? Icons.visibility_off : Icons.visibility,
+                        ),
                       ),
-                    )
-                  ],
-                )),
+                    ),
+                    onChanged: (value) => _authData.password = value,
+                    validator: (value) {
+                      if (value == null || value.trim().length < 7) {
+                        return 'Senha deve ter no mínimo 7 caracteres';
+                      }
+                      return null;
+                    },
+                  ),
+                  if (_authData.isSignup)
+                    TextFormField(
+                      focusNode: textFocusNode,
+                      keyboardType: TextInputType.text,
+                      obscureText: true,
+                      textInputAction: TextInputAction.done,
+                      key: ValueKey('passwordConfirmation'),
+                      decoration: InputDecoration(
+                        labelText: 'Confirmar Senha',
+                      ),
+                      validator: (value) {
+                        if (value == null || value != _authData.password) {
+                          return 'Senhas não conferem';
+                        }
+                        return null;
+                      },
+                    ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _submit,
+                    child: Text(_authData.isLogin ? 'Entrar' : 'Cadastrar'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _authData.toggleMode();
+                      });
+                    },
+                    child: Text(
+                      _authData.isLogin
+                          ? 'Criar nova conta'
+                          : 'Já possui uma conta?',
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ),

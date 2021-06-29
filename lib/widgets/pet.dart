@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class Pet extends StatelessWidget {
+class Pets extends StatelessWidget {
   final User? user;
-  Pet(User? this.user);
+  Pets(User? this.user);
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +17,43 @@ class Pet extends StatelessWidget {
           } else if (snapshot.error != null) {
             return Center(child: Text('Ocorreu um erro!'));
           } else {
-            final collection = snapshot.data!.docs;
+            final petDocs = snapshot.data!.docs;
+
+            if (petDocs.isEmpty) {
+              return Center(child: Text('Não há nenhum pet cadastrado!'));
+            }
+
             return ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: collection.length,
+              itemCount: petDocs.length,
               itemBuilder: (ctx, i) => Container(
-                //decoration: BoxDecoration(image: DecorationImage(image: image)),
-                width: MediaQuery.of(context).size.width / 2,
+                width: petDocs.length == 1
+                    ? MediaQuery.of(context).size.width
+                    : MediaQuery.of(context).size.width / 2,
                 child: Card(
-                  child: ListTile(
-                    title: Text('oi'),
+                  margin: EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                          petDocs[i].get('name'),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      petDocs[i].get('imgUrl') != null
+                          ? Expanded(
+                              child: Image.network(
+                                petDocs[i].get('imgUrl'),
+                                fit: BoxFit.fitHeight,
+                              ),
+                            )
+                          : Expanded(
+                              child: Image.asset(
+                                'assets/images/default.jpeg',
+                                fit: BoxFit.fitHeight,
+                              ),
+                            ),
+                    ],
                   ),
                 ),
               ),
