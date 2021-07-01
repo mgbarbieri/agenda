@@ -7,7 +7,7 @@ class AuthData {
   String? name;
   String? email;
   String? password;
-  AuthMode _mode = AuthMode.SIGNUP;
+  AuthMode _mode = AuthMode.LOGIN;
 
   bool get isSignup {
     return _mode == AuthMode.SIGNUP;

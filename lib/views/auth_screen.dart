@@ -26,6 +26,16 @@ class _AuthScreenState extends State<AuthScreen> {
       if (authData.isLogin) {
         userCredential = await _auth.signInWithEmailAndPassword(
             email: authData.email!.trim(), password: authData.password!);
+        if (!userCredential.user!.emailVerified) {
+          _scaffoldKey.currentState!.showSnackBar(
+            SnackBar(
+              content: Text(
+                  'Email da conta não verificado, por favor confirme o cadastro acessando o link enviado ao email'),
+              backgroundColor: Theme.of(context).errorColor,
+            ),
+          );
+          return;
+        }
       } else {
         userCredential = await _auth.createUserWithEmailAndPassword(
           email: authData.email!.trim(),
@@ -41,6 +51,14 @@ class _AuthScreenState extends State<AuthScreen> {
             .collection('users')
             .doc(userCredential.user!.uid)
             .set(userData);
+
+        await userCredential.user!.sendEmailVerification();
+        _scaffoldKey.currentState!.showSnackBar(
+          SnackBar(
+            content: Text('Link de ativação enviado ao email cadastrado'),
+            duration: Duration(seconds: 10),
+          ),
+        );
       }
     } on FirebaseAuthException catch (e) {
       final msg = e.message ?? 'Ocorreu um erro! verifique suas credenciais!';
