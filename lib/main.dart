@@ -20,7 +20,7 @@ class App extends StatelessWidget {
         backgroundColor: Colors.blue,
       ),
       home: StreamBuilder(
-          stream: FirebaseAuth.instance.authStateChanges(),
+          stream: FirebaseAuth.instance.userChanges(),
           builder: (ctx, AsyncSnapshot<User?> snapshot) {
             if (snapshot.hasData && snapshot.data!.emailVerified) {
               return ListingsScreen(snapshot.data);

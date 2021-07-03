@@ -29,6 +29,14 @@ class _AuthScreenState extends State<AuthScreen> {
         if (!userCredential.user!.emailVerified) {
           _scaffoldKey.currentState!.showSnackBar(
             SnackBar(
+              duration: Duration(seconds: 15),
+              action: SnackBarAction(
+                label: 'RE-ENVIAR',
+                onPressed: () async {
+                  await userCredential.user!.sendEmailVerification();
+                },
+                textColor: Colors.white,
+              ),
               content: Text(
                   'Email da conta não verificado, por favor confirme o cadastro acessando o link enviado ao email'),
               backgroundColor: Theme.of(context).errorColor,
