@@ -22,6 +22,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
   String doc = '';
   String? docId;
   String? _drawer;
+  dynamic h;
 
   Future<void> pickDate(BuildContext context) async {
     final DateTime? selectedDate = await showDatePicker(
@@ -137,8 +138,8 @@ class _ListingsScreenState extends State<ListingsScreen> {
                   UserAccountsDrawerHeader(
                     decoration:
                         BoxDecoration(color: Theme.of(context).accentColor),
-                    accountName: Text('widget.user!.displayName!'),
-                    accountEmail: Text(widget.user!.email!),
+                    accountName: Text('Olá'),
+                    accountEmail: Text(widget.user!.displayName!),
                   ),
                   ListTile(
                     leading: Icon(Icons.list),

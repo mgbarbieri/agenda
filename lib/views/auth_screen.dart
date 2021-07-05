@@ -50,6 +50,8 @@ class _AuthScreenState extends State<AuthScreen> {
           password: authData.password!,
         );
 
+        userCredential.user!.updateDisplayName(authData.name);
+
         final userData = {
           'name': authData.name,
           'email': authData.email,
@@ -67,6 +69,7 @@ class _AuthScreenState extends State<AuthScreen> {
             duration: Duration(seconds: 10),
           ),
         );
+        authData.toggleMode();
       }
     } on FirebaseAuthException catch (e) {
       final msg = e.message ?? 'Ocorreu um erro! verifique suas credenciais!';
