@@ -26,10 +26,11 @@ class _AuthScreenState extends State<AuthScreen> {
       if (authData.isLogin) {
         userCredential = await _auth.signInWithEmailAndPassword(
             email: authData.email!.trim(), password: authData.password!);
+
         if (!userCredential.user!.emailVerified) {
           _scaffoldKey.currentState!.showSnackBar(
             SnackBar(
-              duration: Duration(seconds: 15),
+              duration: Duration(seconds: 10),
               action: SnackBarAction(
                 label: 'RE-ENVIAR',
                 onPressed: () async {
@@ -66,7 +67,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _scaffoldKey.currentState!.showSnackBar(
           SnackBar(
             content: Text('Link de ativação enviado ao email cadastrado'),
-            duration: Duration(seconds: 10),
+            duration: Duration(seconds: 5),
           ),
         );
         authData.toggleMode();
