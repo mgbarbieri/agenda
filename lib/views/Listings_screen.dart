@@ -50,24 +50,12 @@ class _ListingsScreenState extends State<ListingsScreen> {
   Widget drawerSelector(String? drawer) {
     switch (drawer) {
       case 'vet':
-        setState(() {
-          _drawer = drawer;
-        });
         return Doc(callback);
       case 'pet':
-        setState(() {
-          _drawer = drawer;
-        });
         return Pets(widget.user);
       case 'con':
-        setState(() {
-          _drawer = drawer;
-        });
         return Consult(DateFormat('dd-MMM-yyyy').format(date), docId);
       case 'addPet':
-        setState(() {
-          _drawer = drawer;
-        });
         return PetForm(_handleSubmit);
       default:
         return Consult(DateFormat('dd-MMM-yyyy').format(date), docId);
