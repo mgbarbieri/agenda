@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class Consult extends StatelessWidget {
   final String date;
   final String? docId;
+  final String? docName;
 
-  Consult(this.date, this.docId);
+  Consult(this.date, this.docId, this.docName);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,9 @@ class Consult extends StatelessWidget {
           if (consultSnapshot.hasData &&
               consultSnapshot.data!.docs.length == 0) {
             return Center(
-              child: Text('Não estamos atendendo neste dia'),
+              child: docName == ''
+                  ? Text('')
+                  : Text('$docName não está atendendo nesta dia'),
             );
           }
 

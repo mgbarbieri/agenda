@@ -1,8 +1,9 @@
 import 'package:agenda/models/pet_data.dart';
 import 'package:agenda/widgets/consult.dart';
 import 'package:agenda/widgets/doc.dart';
-import 'package:agenda/widgets/pet.dart';
+import 'package:agenda/widgets/pets.dart';
 import 'package:agenda/widgets/pet_form.dart';
+import 'package:agenda/widgets/vetPanel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -22,6 +23,12 @@ class _ListingsScreenState extends State<ListingsScreen> {
   String doc = '';
   String? docId;
   String? _drawer;
+  bool? vet;
+
+  void initState() {
+    vetCheck(widget.user);
+    super.initState();
+  }
 
   Future<void> pickDate(BuildContext context) async {
     final DateTime? selectedDate = await showDatePicker(
@@ -44,7 +51,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
       doc = newDoc;
       _drawer = 'con';
     });
-    Consult(DateFormat('dd-MMM-yyyy').format(date), docId);
+    Consult(DateFormat('dd-MMM-yyyy').format(date), docId, doc);
   }
 
   Widget drawerSelector(String? drawer) {
@@ -54,11 +61,16 @@ class _ListingsScreenState extends State<ListingsScreen> {
       case 'pet':
         return Pets(widget.user);
       case 'con':
-        return Consult(DateFormat('dd-MMM-yyyy').format(date), docId);
+        return Consult(DateFormat('dd-MMM-yyyy').format(date), docId, doc);
       case 'addPet':
+        setState(() {
+          _drawer = drawer;
+        });
         return PetForm(_handleSubmit);
+      case 'vetPanel':
+        return VetPanel();
       default:
-        return Consult(DateFormat('dd-MMM-yyyy').format(date), docId);
+        return Doc(callback);
     }
   }
 
@@ -96,15 +108,20 @@ class _ListingsScreenState extends State<ListingsScreen> {
     });
   }
 
-  Future<bool> vetCheck(User? user) async {
+  Future<void> vetCheck(User? user) async {
     await FirebaseFirestore.instance
         .collection('people')
         .where('uid', isEqualTo: user!.uid)
         .get()
         .then((value) {
-      if (value.size == 1) return true;
+      if (value.size == 1) {
+        setState(() {
+          vet = true;
+        });
+      } else {
+        vet = false;
+      }
     });
-    return false;
   }
 
   @override
@@ -136,56 +153,41 @@ class _ListingsScreenState extends State<ListingsScreen> {
                     accountName: Text('Olá'),
                     accountEmail: Text(widget.user!.displayName!),
                   ),
-                  FutureBuilder(
-                      future: FirebaseFirestore.instance
-                          .collection('people')
-                          .where('uid', isEqualTo: widget.user!.uid)
-                          .get(),
-                      builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (snapshot.error != null) {
-                          return Center(child: Text('Ocorreu um erro!'));
-                        } else {
-                          if (snapshot.data!.size == 1) {
-                            return ListTile(
-                              leading: Icon(Icons.list),
-                              title: Text('Agenda'),
-                              subtitle: Text('Suas consultas'),
-                              onTap: () {},
-                            );
-                          }
-                          return Container(
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  leading: Icon(Icons.list),
-                                  title: Text('Doutores'),
-                                  subtitle: Text('Veterinários'),
-                                  onTap: () {
-                                    setState(() {
-                                      _drawer = 'vet';
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                ListTile(
-                                  leading: Icon(Icons.pets),
-                                  title: Text('Pets'),
-                                  subtitle: Text(''),
-                                  onTap: () {
-                                    setState(() {
-                                      _drawer = 'pet';
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      }),
+                  vet == true
+                      ? ListTile(
+                          leading: Icon(Icons.list),
+                          title: Text('Agenda'),
+                          subtitle: Text('Suas consultas'),
+                          onTap: () {
+                            setState(() {
+                              _drawer = 'vetPanel';
+                            });
+                            Navigator.pop(context);
+                          },
+                        )
+                      : Container(),
+                  ListTile(
+                    leading: Icon(Icons.list),
+                    title: Text('Doutores'),
+                    subtitle: Text('Veterinários'),
+                    onTap: () {
+                      setState(() {
+                        _drawer = 'vet';
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.pets),
+                    title: Text('Pets'),
+                    subtitle: Text(''),
+                    onTap: () {
+                      setState(() {
+                        _drawer = 'pet';
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
                   ListTile(
                     leading: Icon(Icons.logout),
                     title: Text('Sair'),
@@ -204,7 +206,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Expanded(child: drawerSelector(_drawer)),
-              if (_drawer != 'addPet')
+              if (_drawer != 'addPet' && _drawer != 'vetPanel')
                 ElevatedButton.icon(
                     onPressed: _drawer == 'pet'
                         ? () => drawerSelector('addPet')

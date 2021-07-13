@@ -37,6 +37,7 @@ dependencies:
   path: ^1.8.0
   path_provider: ^2.0.2
   permission_handler: ^8.1.2
+  syncfusion_flutter_calendar: ^19.2.47
 
 dev_dependencies:
   flutter_test:
