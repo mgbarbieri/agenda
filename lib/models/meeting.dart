@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:equatable/equatable.dart';
 
 class MeetingDataSource extends CalendarDataSource {
   MeetingDataSource(List<Meeting> source) {
@@ -32,12 +33,24 @@ class MeetingDataSource extends CalendarDataSource {
   }
 }
 
-class Meeting {
-  Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
+class Meeting extends Equatable {
+  Meeting({
+    this.eventName = '',
+    required this.from,
+    required this.to,
+    required this.background,
+    this.isAllDay = false,
+  });
 
-  String eventName;
-  DateTime from;
-  DateTime to;
-  Color background;
-  bool isAllDay;
+  final String eventName;
+  final DateTime from;
+  final DateTime to;
+  final Color background;
+  final bool isAllDay;
+
+  @override
+  List<Object?> get props => [from];
+
+  @override
+  bool get stringify => true;
 }

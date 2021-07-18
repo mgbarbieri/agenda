@@ -23,6 +23,34 @@ class _VetPanelState extends State<VetPanel> {
   Widget build(BuildContext context) {
     return Container(
       child: SfCalendar(
+        onTap: (CalendarTapDetails details) {
+          if (details.targetElement == CalendarElement.appointment)
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("AlertDialog"),
+                  content: Text(
+                      "Would you like to get information on this appointment?"),
+                  actions: [
+                    ElevatedButton(
+                      child: Text("Cancel"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ElevatedButton(
+                      child: Text("Continue"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    )
+                  ],
+                );
+              },
+            );
+        },
+        todayHighlightColor: Colors.blue,
         view: CalendarView.month,
         dataSource: events,
         monthViewSettings: MonthViewSettings(showAgenda: true),
@@ -31,14 +59,18 @@ class _VetPanelState extends State<VetPanel> {
   }
 
   Future<void> getDataFromDatabase() async {
-    CollectionReference appointments =
-        FirebaseFirestore.instance.collection('appointments');
-    QuerySnapshot snapshot = await appointments
-        .where('vetUid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-        .get();
+    CollectionReference appointments = FirebaseFirestore.instance
+        .collection('people')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('appointments');
+    QuerySnapshot snapshot = await appointments.get();
     List<Meeting> list = snapshot.docs
-        .map((doc) => Meeting(doc.get('petName'), doc.get('date').toDate(),
-            doc.get('to').toDate(), Colors.blue, false))
+        .map((doc) => Meeting(
+            eventName: doc.get('petName'),
+            from: doc.get('date').toDate(),
+            to: doc.get('to').toDate(),
+            background: Colors.blue,
+            isAllDay: false))
         .toList();
     setState(() {
       events = MeetingDataSource(list);

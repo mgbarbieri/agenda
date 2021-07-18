@@ -24,6 +24,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
   String? docId;
   String? _drawer;
   bool? vet;
+  Map week = {};
 
   void initState() {
     vetCheck(widget.user);
@@ -35,23 +36,26 @@ class _ListingsScreenState extends State<ListingsScreen> {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
-      lastDate: DateTime(DateTime.now().year + 1),
+      lastDate: DateTime.now().add(const Duration(days: 90)),
     );
 
     if (selectedDate == null) return;
 
+    final DateTime format =
+        DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
     setState(() {
-      date = selectedDate;
+      date = format;
     });
   }
 
-  callback(newDocId, newDoc) {
+  callback(newDocId, newDoc, nWeek) {
     setState(() {
+      week = nWeek;
       docId = newDocId;
       doc = newDoc;
       _drawer = 'con';
     });
-    Consult(DateFormat('dd-MMM-yyyy').format(date), docId, doc);
+    Consult(date, docId, doc, week);
   }
 
   Widget drawerSelector(String? drawer) {
@@ -61,7 +65,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
       case 'pet':
         return Pets(widget.user);
       case 'con':
-        return Consult(DateFormat('dd-MMM-yyyy').format(date), docId, doc);
+        return Consult(date, docId, doc, week);
       case 'addPet':
         setState(() {
           _drawer = drawer;
@@ -206,17 +210,12 @@ class _ListingsScreenState extends State<ListingsScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Expanded(child: drawerSelector(_drawer)),
-              if (_drawer != 'addPet' && _drawer != 'vetPanel')
+              if (_drawer == 'pet')
                 ElevatedButton.icon(
-                    onPressed: _drawer == 'pet'
-                        ? () => drawerSelector('addPet')
-                        : () => pickDate(context),
-                    icon: _drawer == 'pet'
-                        ? Icon(Icons.pets)
-                        : Icon(Icons.date_range),
-                    label: _drawer == 'pet'
-                        ? Text('Adicionar um pet')
-                        : Text('Selecionar data'))
+                  onPressed: () => drawerSelector('addPet'),
+                  icon: Icon(Icons.pets),
+                  label: Text('Adicionar um pet'),
+                ),
             ],
           ),
         ),

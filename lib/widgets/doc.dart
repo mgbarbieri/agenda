@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Doc extends StatefulWidget {
-  final Function(String?, String?) callback;
+  final Function(String?, String?, Map?) callback;
 
   Doc(this.callback);
 
@@ -42,7 +42,8 @@ class _DocState extends State<Doc> {
             itemCount: collection.length,
             itemBuilder: (ctx, i) => GestureDetector(
               onTap: () {
-                widget.callback(collection[i].id, collection[i].get('name'));
+                widget.callback(collection[i].id, collection[i].get('name'),
+                    collection[i].get('week'));
               },
               child: Card(
                 clipBehavior: Clip.antiAlias,
@@ -82,7 +83,7 @@ class _DocState extends State<Doc> {
                                 children: [
                                   Text('Seg'),
                                   Checkbox(
-                                      value: collection[i].get('week')['mon'],
+                                      value: collection[i].get('week')['1'],
                                       onChanged: (value) {}),
                                 ],
                               ),
@@ -90,7 +91,7 @@ class _DocState extends State<Doc> {
                                 children: [
                                   Text('Ter'),
                                   Checkbox(
-                                      value: collection[i].get('week')['tue'],
+                                      value: collection[i].get('week')['2'],
                                       onChanged: (value) {}),
                                 ],
                               ),
@@ -98,7 +99,7 @@ class _DocState extends State<Doc> {
                                 children: [
                                   Text('Qua'),
                                   Checkbox(
-                                      value: collection[i].get('week')['wed'],
+                                      value: collection[i].get('week')['3'],
                                       onChanged: (value) {}),
                                 ],
                               ),
@@ -106,7 +107,7 @@ class _DocState extends State<Doc> {
                                 children: [
                                   Text('Qui'),
                                   Checkbox(
-                                      value: collection[i].get('week')['thu'],
+                                      value: collection[i].get('week')['4'],
                                       onChanged: (value) {}),
                                 ],
                               ),
@@ -114,7 +115,7 @@ class _DocState extends State<Doc> {
                                 children: [
                                   Text('Sex'),
                                   Checkbox(
-                                      value: collection[i].get('week')['fri'],
+                                      value: collection[i].get('week')['5'],
                                       onChanged: (value) {}),
                                 ],
                               ),
@@ -122,7 +123,7 @@ class _DocState extends State<Doc> {
                                 children: [
                                   Text('Sab'),
                                   Checkbox(
-                                      value: collection[i].get('week')['sat'],
+                                      value: collection[i].get('week')['6'],
                                       onChanged: (value) {}),
                                 ],
                               ),
@@ -130,7 +131,7 @@ class _DocState extends State<Doc> {
                                 children: [
                                   Text('Dom'),
                                   Checkbox(
-                                      value: collection[i].get('week')['sun'],
+                                      value: collection[i].get('week')['7'],
                                       onChanged: (value) {}),
                                 ],
                               ),

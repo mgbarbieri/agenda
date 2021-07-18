@@ -39,6 +39,7 @@ dependencies:
   permission_handler: ^8.1.2
   syncfusion_flutter_calendar: ^19.2.47
   syncfusion_localizations: ^19.2.47
+  equatable: ^2.0.3
 
 dev_dependencies:
   flutter_test:
