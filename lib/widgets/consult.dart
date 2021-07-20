@@ -1,7 +1,9 @@
 import 'package:agenda/models/meeting.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:intl/intl.dart';
 
 class Consult extends StatefulWidget {
   final DateTime date;
@@ -18,11 +20,14 @@ class Consult extends StatefulWidget {
 class _ConsultState extends State<Consult> {
   MeetingDataSource? events;
   List<Meeting> reg = [];
+  List<DateTime> off = [];
+  List<String> pets = [];
+  String? appointmentPet;
   @override
   void initState() {
     reg = appointments();
-    events = MeetingDataSource(reg);
     getDataFromDatabase();
+    getPets();
     super.initState();
   }
 
@@ -34,31 +39,64 @@ class _ConsultState extends State<Consult> {
         todayHighlightColor: Colors.blue,
         view: CalendarView.month,
         onTap: (CalendarTapDetails details) {
-          if (details.targetElement == CalendarElement.appointment)
+          if (details.targetElement == CalendarElement.appointment) {
+            Meeting consulta = details.appointments!.first;
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text("AlertDialog"),
-                  content: Text("Would you like to schedule an appointment?"),
-                  actions: [
-                    ElevatedButton(
-                      child: Text("Cancel"),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                return StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                  return AlertDialog(
+                    title: Text("Consulta"),
+                    content: Container(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                              "Gostaria de marcar uma consulta ${DateFormat.yMd('pt').format(details.date!)} as ${DateFormat.Hms().format(consulta.from)} ?"),
+                          DropdownButton(
+                            value: appointmentPet,
+                            items: pets
+                                .map((pet) => DropdownMenuItem(
+                                      value: pet,
+                                      child: Text(pet),
+                                    ))
+                                .toList(),
+                            onChanged: (String? value) {
+                              setState(() {
+                                appointmentPet = value;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                    ElevatedButton(
-                      child: Text("Continue"),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                );
+                    actions: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ElevatedButton(
+                            child: Text("Cancelar"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ElevatedButton(
+                            child: Text("Confirmar"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      )
+                    ],
+                  );
+                });
               },
             );
+          }
         },
+        blackoutDates: off,
         dataSource: events,
         minDate: DateTime.now(),
         maxDate: DateTime.now().add(const Duration(days: 90)),
@@ -68,7 +106,7 @@ class _ConsultState extends State<Consult> {
 
   List<Meeting> appointments() {
     List<Meeting> regular = [];
-    final minDate = DateTime.now();
+    final minDate = DateTime.now().add(Duration(hours: 1));
     final maxDate = minDate.add(const Duration(days: 90));
     var days = maxDate.difference(minDate).inDays;
     DateTime date =
@@ -89,6 +127,7 @@ class _ConsultState extends State<Consult> {
         }
         date = date.add(Duration(hours: 14));
       } else {
+        off.add(DateTime(date.year, date.month, date.day));
         date = date.add(Duration(days: 1));
         date = DateTime(date.year, date.month, date.day, 8);
       }
@@ -96,12 +135,29 @@ class _ConsultState extends State<Consult> {
     return regular;
   }
 
+  Future<void> getPets() async {
+    CollectionReference petsRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('pets');
+
+    QuerySnapshot snapshot = await petsRef.get();
+    List<String> petsList =
+        snapshot.docs.map((pet) => pet.get('petName').toString()).toList();
+    if (petsList.isNotEmpty) {
+      setState(() {
+        pets = petsList;
+        appointmentPet = petsList.first;
+      });
+    }
+  }
+
   Future<void> getDataFromDatabase() async {
-    CollectionReference appointments = FirebaseFirestore.instance
+    CollectionReference appointmentsRef = FirebaseFirestore.instance
         .collection('people')
         .doc(widget.docId)
         .collection('appointments');
-    QuerySnapshot snapshot = await appointments.get();
+    QuerySnapshot snapshot = await appointmentsRef.get();
     List<Meeting> list = snapshot.docs
         .map((doc) => Meeting(
             eventName: doc.get('petName'),
