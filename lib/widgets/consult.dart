@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:agenda/models/meeting.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,8 +23,8 @@ class _ConsultState extends State<Consult> {
   MeetingDataSource? events;
   List<Meeting> reg = [];
   List<DateTime> off = [];
-  List<String> pets = [];
-  String? appointmentPet;
+  List<Map<String, dynamic>> pets = [];
+  Map<String, dynamic> appointmentPet = {};
   @override
   void initState() {
     reg = appointments();
@@ -55,16 +57,17 @@ class _ConsultState extends State<Consult> {
                           Text(
                               "Gostaria de marcar uma consulta ${DateFormat.yMd('pt').format(details.date!)} as ${DateFormat.Hms().format(consulta.from)} ?"),
                           DropdownButton(
-                            value: appointmentPet,
                             items: pets
                                 .map((pet) => DropdownMenuItem(
-                                      value: pet,
-                                      child: Text(pet),
+                                      value: pet['id'].toString(),
+                                      child: Text(pet['petName']),
                                     ))
                                 .toList(),
+                            value: appointmentPet['id'].toString(),
                             onChanged: (String? value) {
                               setState(() {
-                                appointmentPet = value;
+                                appointmentPet = pets
+                                    .firstWhere((pet) => pet['id'] == value);
                               });
                             },
                           ),
@@ -83,9 +86,7 @@ class _ConsultState extends State<Consult> {
                           ),
                           ElevatedButton(
                             child: Text("Confirmar"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
+                            onPressed: () => confirmAppointment(details),
                           ),
                         ],
                       )
@@ -135,6 +136,54 @@ class _ConsultState extends State<Consult> {
     return regular;
   }
 
+  Future<void> confirmAppointment(CalendarTapDetails details) async {
+    if (appointmentPet.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+              'A consulta não foi registrada. Por favor adicione um pet antes de agendar uma consulta')));
+      Navigator.pop(context);
+      return;
+    }
+
+    final vetAppointment = {
+      'date': details.appointments!.first.from,
+      'petName': appointmentPet['petName'],
+      'petId': appointmentPet['id'],
+      'to': details.appointments!.first.from.add(const Duration(hours: 1))
+    };
+
+    final userAppointment = {
+      'date': details.appointments!.first.from,
+      'to': details.appointments!.first.from.add(const Duration(hours: 1)),
+      'vet': widget.docName,
+      'vetId': widget.docId,
+    };
+
+    CollectionReference userAppRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('pets')
+        .doc(appointmentPet['id'])
+        .collection('appointments');
+
+    await userAppRef.doc().set(userAppointment);
+
+    CollectionReference appointmentRef = FirebaseFirestore.instance
+        .collection('people')
+        .doc(widget.docId)
+        .collection('appointments');
+
+    await appointmentRef.doc().set(vetAppointment);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Consulta marcada!'),
+      backgroundColor: Colors.blue,
+    ));
+
+    Navigator.pop(context);
+    getDataFromDatabase();
+  }
+
   Future<void> getPets() async {
     CollectionReference petsRef = FirebaseFirestore.instance
         .collection('users')
@@ -142,13 +191,22 @@ class _ConsultState extends State<Consult> {
         .collection('pets');
 
     QuerySnapshot snapshot = await petsRef.get();
-    List<String> petsList =
-        snapshot.docs.map((pet) => pet.get('petName').toString()).toList();
+    List<Map<String, dynamic>> petsList = snapshot.docs
+        .map((pet) => {
+              'id': pet.id,
+              'petName': pet.get('petName'),
+            })
+        .toList();
     if (petsList.isNotEmpty) {
       setState(() {
         pets = petsList;
         appointmentPet = petsList.first;
       });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.red,
+          content:
+              Text('Por favor adicione um pet antes de agendar uma consulta')));
     }
   }
 

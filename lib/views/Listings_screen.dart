@@ -23,6 +23,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
   String doc = '';
   String? docId;
   String? _drawer;
+
   bool? vet;
   Map week = {};
 
@@ -63,7 +64,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
       case 'vet':
         return Doc(callback);
       case 'pet':
-        return Pets(widget.user);
+        return Pets();
       case 'con':
         return Consult(date, docId, doc, week);
       case 'addPet':
