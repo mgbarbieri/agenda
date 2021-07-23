@@ -35,13 +35,16 @@ class MeetingDataSource extends CalendarDataSource {
 
 class Meeting extends Equatable {
   Meeting({
+    this.userId = '',
+    this.petId = '',
     this.eventName = '',
     required this.from,
     required this.to,
     required this.background,
     this.isAllDay = false,
   });
-
+  final String userId;
+  final String petId;
   final String eventName;
   final DateTime from;
   final DateTime to;

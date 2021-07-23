@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:agenda/views/petDetails_screen.dart';
 
 class VetPanel extends StatefulWidget {
   const VetPanel({Key? key}) : super(key: key);
@@ -25,30 +26,11 @@ class _VetPanelState extends State<VetPanel> {
       child: SfCalendar(
         onTap: (CalendarTapDetails details) {
           if (details.targetElement == CalendarElement.appointment)
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text("AlertDialog"),
-                  content: Text(
-                      "Would you like to get information on this appointment?"),
-                  actions: [
-                    ElevatedButton(
-                      child: Text("Cancel"),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ElevatedButton(
-                      child: Text("Continue"),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    )
-                  ],
-                );
-              },
-            );
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        PetDetails(details.appointments!.first)));
         },
         todayHighlightColor: Colors.blue,
         view: CalendarView.month,
@@ -66,6 +48,8 @@ class _VetPanelState extends State<VetPanel> {
     QuerySnapshot snapshot = await appointments.get();
     List<Meeting> list = snapshot.docs
         .map((doc) => Meeting(
+            userId: doc.get('userId'),
+            petId: doc.get('petId'),
             eventName: doc.get('petName'),
             from: doc.get('date').toDate(),
             to: doc.get('to').toDate(),

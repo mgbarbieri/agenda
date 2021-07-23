@@ -147,6 +147,7 @@ class _ConsultState extends State<Consult> {
     }
 
     final vetAppointment = {
+      'userId': FirebaseAuth.instance.currentUser!.uid,
       'date': details.appointments!.first.from,
       'petName': appointmentPet['petName'],
       'petId': appointmentPet['id'],

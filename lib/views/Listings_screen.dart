@@ -97,7 +97,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
       final pet = {
         'owner': widget.user!.uid,
         'imgUrl': url,
-        'name': petData.name,
+        'petName': petData.name,
         'sex': petData.sex,
         'specie': petData.specie,
         'race': petData.race,
@@ -105,7 +105,12 @@ class _ListingsScreenState extends State<ListingsScreen> {
         'history': petData.history,
       };
 
-      await FirebaseFirestore.instance.collection('pets').doc().set(pet);
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('pets')
+          .doc()
+          .set(pet);
     } catch (e) {}
 
     setState(() {

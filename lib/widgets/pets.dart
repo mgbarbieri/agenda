@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 class Pets extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    CollectionReference pets = FirebaseFirestore.instance.collection('pets');
+    CollectionReference pets = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('pets');
     return FutureBuilder(
-        future: pets
-            .where('owner', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-            .get(),
+        future: pets.get(),
         builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -35,7 +36,7 @@ class Pets extends StatelessWidget {
                     children: [
                       ListTile(
                         title: Text(
-                          petDocs[i].get('name'),
+                          petDocs[i].get('petName'),
                           textAlign: TextAlign.center,
                         ),
                       ),
