@@ -15,7 +15,12 @@ class PetDetails extends StatelessWidget {
         .collection('pets');
     return Scaffold(
       appBar: AppBar(
-        title: Text(appointmentDetails.eventName),
+        title: Center(
+            child: Text(
+          appointmentDetails.eventName,
+          textAlign: TextAlign.center,
+        )),
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.edit))],
       ),
       body: Container(
         alignment: Alignment.center,
@@ -36,7 +41,76 @@ class PetDetails extends StatelessWidget {
                           return Center(child: Text('Ocorreu um erro!'));
                         } else {
                           return Column(
-                            children: [Text(snapshot.data!.get('petName'))],
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.amber,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Nome',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            snapshot.data!.get('petName'),
+                                            maxLines: 1,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.amber,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Espécie',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            snapshot.data!.get('petName'),
+                                            maxLines: 1,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.amber,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Sexo',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            snapshot.data!.get('petName'),
+                                            maxLines: 1,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           );
                         }
                       }),
