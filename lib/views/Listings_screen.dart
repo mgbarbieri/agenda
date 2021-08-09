@@ -86,7 +86,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
         final ref = FirebaseStorage.instance
             .ref()
             .child('pet_images')
-            .child(widget.user!.uid + '.jpg');
+            .child(widget.user!.uid + petData.name! + '.jpg');
 
         await ref.putFile(petData.image!);
         url = await ref.getDownloadURL();

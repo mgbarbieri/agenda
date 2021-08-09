@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:agenda/models/meeting.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,9 +35,21 @@ class _ConsultState extends State<Consult> {
   Widget build(BuildContext context) {
     return Container(
       child: SfCalendar(
-        monthViewSettings: MonthViewSettings(showAgenda: true),
+        monthViewSettings: MonthViewSettings(
+            showAgenda: true,
+            numberOfWeeksInView:
+                MediaQuery.of(context).orientation == Orientation.landscape
+                    ? 2
+                    : 6),
         todayHighlightColor: Colors.blue,
         view: CalendarView.month,
+        allowedViews: [
+          CalendarView.day,
+          CalendarView.week,
+          CalendarView.month,
+        ],
+        appointmentTimeTextFormat: 'HH:mm',
+        timeSlotViewSettings: TimeSlotViewSettings(timeFormat: 'HH:mm'),
         onTap: (CalendarTapDetails details) {
           if (details.targetElement == CalendarElement.appointment) {
             Meeting consulta = details.appointments!.first;
@@ -119,6 +129,7 @@ class _ConsultState extends State<Consult> {
           if (date.hour >= 18) continue;
           if (date.hour != 12) {
             regular.add(Meeting(
+                eventName: 'Disponível',
                 background: Colors.blue,
                 from: date,
                 to: date.add(Duration(hours: 1))));

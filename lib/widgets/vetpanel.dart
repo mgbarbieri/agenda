@@ -24,6 +24,12 @@ class _VetPanelState extends State<VetPanel> {
   Widget build(BuildContext context) {
     return Container(
       child: SfCalendar(
+        allowedViews: [
+          CalendarView.day,
+          CalendarView.week,
+          CalendarView.month,
+        ],
+        timeSlotViewSettings: TimeSlotViewSettings(timeFormat: 'HH:mm'),
         onTap: (CalendarTapDetails details) {
           if (details.targetElement == CalendarElement.appointment)
             Navigator.push(
@@ -35,7 +41,12 @@ class _VetPanelState extends State<VetPanel> {
         todayHighlightColor: Colors.blue,
         view: CalendarView.month,
         dataSource: events,
-        monthViewSettings: MonthViewSettings(showAgenda: true),
+        monthViewSettings: MonthViewSettings(
+            showAgenda: true,
+            numberOfWeeksInView:
+                MediaQuery.of(context).orientation == Orientation.landscape
+                    ? 2
+                    : 6),
       ),
     );
   }
