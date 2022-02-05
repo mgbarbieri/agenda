@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Pets extends StatelessWidget {
+  const Pets({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     CollectionReference pets = FirebaseFirestore.instance
@@ -13,25 +15,25 @@ class Pets extends StatelessWidget {
         future: pets.get(),
         builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.error != null) {
-            return Center(child: Text('Ocorreu um erro!'));
+            return const Center(child: Text('Ocorreu um erro!'));
           } else {
             final petDocs = snapshot.data!.docs;
 
             if (petDocs.isEmpty) {
-              return Center(child: Text('Não há nenhum pet cadastrado!'));
+              return const Center(child: Text('Não há nenhum pet cadastrado!'));
             }
 
             return ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: petDocs.length,
-              itemBuilder: (ctx, i) => Container(
+              itemBuilder: (ctx, i) => SizedBox(
                 width: petDocs.length == 1
                     ? MediaQuery.of(context).size.width
                     : MediaQuery.of(context).size.width / 2,
                 child: Card(
-                  margin: EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(8),
                   child: Column(
                     children: [
                       ListTile(

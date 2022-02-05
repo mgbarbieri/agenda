@@ -9,20 +9,22 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(App());
+  runApp(const App());
 }
 
 class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         SfGlobalLocalizations.delegate
       ],
-      supportedLocales: [
-        const Locale('pt'),
+      supportedLocales: const [
+        Locale('pt'),
       ],
       locale: const Locale('pt'),
       title: 'Agenda',
@@ -36,7 +38,7 @@ class App extends StatelessWidget {
             if (userSnapshot.hasData && userSnapshot.data!.emailVerified) {
               return ListingsScreen(userSnapshot.data);
             } else {
-              return AuthScreen();
+              return const AuthScreen();
             }
           }),
     );

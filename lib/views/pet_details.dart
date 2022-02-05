@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class PetDetails extends StatelessWidget {
   final Meeting appointmentDetails;
 
-  PetDetails(this.appointmentDetails);
+  const PetDetails(this.appointmentDetails, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class PetDetails extends StatelessWidget {
           appointmentDetails.eventName,
           textAlign: TextAlign.center,
         )),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.edit))],
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
       ),
       body: Container(
         alignment: Alignment.center,
@@ -29,16 +29,17 @@ class PetDetails extends StatelessWidget {
           children: [
             Expanded(
               child: Card(
-                margin: EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
                 child: SingleChildScrollView(
                   child: FutureBuilder(
                       future: pets.doc(appointmentDetails.petId).get(),
                       builder: (ctx, AsyncSnapshot<DocumentSnapshot> snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         } else if (snapshot.error != null) {
-                          return Center(child: Text('Ocorreu um erro!'));
+                          return const Center(child: Text('Ocorreu um erro!'));
                         } else {
                           return Column(
                             children: [
@@ -51,7 +52,7 @@ class PetDetails extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
+                                          const Text(
                                             'Nome',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),
@@ -75,7 +76,7 @@ class PetDetails extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
+                                          const Text(
                                             'Espécie',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),
@@ -95,7 +96,7 @@ class PetDetails extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
+                                          const Text(
                                             'Sexo',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),

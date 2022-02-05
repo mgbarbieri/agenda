@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class Doc extends StatefulWidget {
   final Function(String?, String?, Map?) callback;
 
-  Doc(this.callback);
+  const Doc(this.callback, {Key? key}) : super(key: key);
 
   @override
   _DocState createState() => _DocState();
@@ -31,9 +31,9 @@ class _DocState extends State<Doc> {
       future: users.get(),
       builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.error != null) {
-          return Center(child: Text('Ocorreu um erro!'));
+          return const Center(child: Text('Ocorreu um erro!'));
         } else {
           final collection = snapshot.data!.docs;
 
@@ -67,7 +67,7 @@ class _DocState extends State<Doc> {
                           children: [
                             Text(
                               '${collection[i].get('name')}',
-                              style: TextStyle(fontSize: 17),
+                              style: const TextStyle(fontSize: 17),
                             ),
                           ],
                         ),
@@ -81,7 +81,7 @@ class _DocState extends State<Doc> {
                             children: [
                               Column(
                                 children: [
-                                  Text('Seg'),
+                                  const Text('Seg'),
                                   Checkbox(
                                       value: collection[i].get('week')['1'],
                                       onChanged: (value) {}),
@@ -89,7 +89,7 @@ class _DocState extends State<Doc> {
                               ),
                               Column(
                                 children: [
-                                  Text('Ter'),
+                                  const Text('Ter'),
                                   Checkbox(
                                       value: collection[i].get('week')['2'],
                                       onChanged: (value) {}),
@@ -97,7 +97,7 @@ class _DocState extends State<Doc> {
                               ),
                               Column(
                                 children: [
-                                  Text('Qua'),
+                                  const Text('Qua'),
                                   Checkbox(
                                       value: collection[i].get('week')['3'],
                                       onChanged: (value) {}),
@@ -105,7 +105,7 @@ class _DocState extends State<Doc> {
                               ),
                               Column(
                                 children: [
-                                  Text('Qui'),
+                                  const Text('Qui'),
                                   Checkbox(
                                       value: collection[i].get('week')['4'],
                                       onChanged: (value) {}),
@@ -113,7 +113,7 @@ class _DocState extends State<Doc> {
                               ),
                               Column(
                                 children: [
-                                  Text('Sex'),
+                                  const Text('Sex'),
                                   Checkbox(
                                       value: collection[i].get('week')['5'],
                                       onChanged: (value) {}),
@@ -121,7 +121,7 @@ class _DocState extends State<Doc> {
                               ),
                               Column(
                                 children: [
-                                  Text('Sab'),
+                                  const Text('Sab'),
                                   Checkbox(
                                       value: collection[i].get('week')['6'],
                                       onChanged: (value) {}),
@@ -129,7 +129,7 @@ class _DocState extends State<Doc> {
                               ),
                               Column(
                                 children: [
-                                  Text('Dom'),
+                                  const Text('Dom'),
                                   Checkbox(
                                       value: collection[i].get('week')['7'],
                                       onChanged: (value) {}),

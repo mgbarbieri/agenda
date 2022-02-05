@@ -13,7 +13,7 @@ import 'package:intl/intl.dart';
 class ListingsScreen extends StatefulWidget {
   final User? user;
 
-  ListingsScreen(this.user);
+  const ListingsScreen(this.user, {Key? key}) : super(key: key);
   @override
   _ListingsScreenState createState() => _ListingsScreenState();
 }
@@ -27,6 +27,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
   bool? vet;
   Map week = {};
 
+  @override
   void initState() {
     vetCheck(widget.user);
     super.initState();
@@ -64,7 +65,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
       case 'vet':
         return Doc(callback);
       case 'pet':
-        return Pets();
+        return const Pets();
       case 'con':
         return Consult(date, docId, doc, week);
       case 'addPet':
@@ -73,7 +74,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
         });
         return PetForm(_handleSubmit);
       case 'vetPanel':
-        return VetPanel();
+        return const VetPanel();
       default:
         return Doc(callback);
     }
@@ -148,26 +149,26 @@ class _ListingsScreenState extends State<ListingsScreen> {
               ),
             ],
           ),
-          actions: [],
+          actions: const [],
         ),
         drawer: SafeArea(
-          child: Container(
+          child: SizedBox(
             width: MediaQuery.of(context).size.width / 2,
             child: Drawer(
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: [
                   UserAccountsDrawerHeader(
-                    decoration:
-                        BoxDecoration(color: Theme.of(context).accentColor),
-                    accountName: Text('Olá'),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary),
+                    accountName: const Text('Olá'),
                     accountEmail: Text(widget.user!.displayName!),
                   ),
                   vet == true
                       ? ListTile(
-                          leading: Icon(Icons.list),
-                          title: Text('Agenda'),
-                          subtitle: Text('Suas consultas'),
+                          leading: const Icon(Icons.list),
+                          title: const Text('Agenda'),
+                          subtitle: const Text('Suas consultas'),
                           onTap: () {
                             setState(() {
                               _drawer = 'vetPanel';
@@ -177,9 +178,9 @@ class _ListingsScreenState extends State<ListingsScreen> {
                         )
                       : Container(),
                   ListTile(
-                    leading: Icon(Icons.list),
-                    title: Text('Doutores'),
-                    subtitle: Text('Veterinários'),
+                    leading: const Icon(Icons.list),
+                    title: const Text('Doutores'),
+                    subtitle: const Text('Veterinários'),
                     onTap: () {
                       setState(() {
                         _drawer = 'vet';
@@ -188,9 +189,9 @@ class _ListingsScreenState extends State<ListingsScreen> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.pets),
-                    title: Text('Pets'),
-                    subtitle: Text(''),
+                    leading: const Icon(Icons.pets),
+                    title: const Text('Pets'),
+                    subtitle: const Text(''),
                     onTap: () {
                       setState(() {
                         _drawer = 'pet';
@@ -199,8 +200,8 @@ class _ListingsScreenState extends State<ListingsScreen> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.logout),
-                    title: Text('Sair'),
+                    leading: const Icon(Icons.logout),
+                    title: const Text('Sair'),
                     onTap: () {
                       FirebaseAuth.instance.signOut();
                     },
@@ -219,8 +220,8 @@ class _ListingsScreenState extends State<ListingsScreen> {
               if (_drawer == 'pet')
                 ElevatedButton.icon(
                   onPressed: () => drawerSelector('addPet'),
-                  icon: Icon(Icons.pets),
-                  label: Text('Adicionar um pet'),
+                  icon: const Icon(Icons.pets),
+                  label: const Text('Adicionar um pet'),
                 ),
             ],
           ),

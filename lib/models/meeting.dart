@@ -34,7 +34,7 @@ class MeetingDataSource extends CalendarDataSource {
 }
 
 class Meeting extends Equatable {
-  Meeting({
+  const Meeting({
     this.userId = '',
     this.petId = '',
     this.eventName = '',

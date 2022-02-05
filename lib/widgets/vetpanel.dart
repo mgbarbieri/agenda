@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:agenda/views/petDetails_screen.dart';
+import 'package:agenda/views/pet_details.dart';
 
 class VetPanel extends StatefulWidget {
   const VetPanel({Key? key}) : super(key: key);
@@ -22,32 +22,31 @@ class _VetPanelState extends State<VetPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: SfCalendar(
-        allowedViews: [
-          CalendarView.day,
-          CalendarView.week,
-          CalendarView.month,
-        ],
-        timeSlotViewSettings: TimeSlotViewSettings(timeFormat: 'HH:mm'),
-        onTap: (CalendarTapDetails details) {
-          if (details.targetElement == CalendarElement.appointment)
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        PetDetails(details.appointments!.first)));
-        },
-        todayHighlightColor: Colors.blue,
-        view: CalendarView.month,
-        dataSource: events,
-        monthViewSettings: MonthViewSettings(
-            showAgenda: true,
-            numberOfWeeksInView:
-                MediaQuery.of(context).orientation == Orientation.landscape
-                    ? 2
-                    : 6),
-      ),
+    return SfCalendar(
+      allowedViews: const [
+        CalendarView.day,
+        CalendarView.week,
+        CalendarView.month,
+      ],
+      timeSlotViewSettings: const TimeSlotViewSettings(timeFormat: 'HH:mm'),
+      onTap: (CalendarTapDetails details) {
+        if (details.targetElement == CalendarElement.appointment) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      PetDetails(details.appointments!.first)));
+        }
+      },
+      todayHighlightColor: Colors.blue,
+      view: CalendarView.month,
+      dataSource: events,
+      monthViewSettings: MonthViewSettings(
+          showAgenda: true,
+          numberOfWeeksInView:
+              MediaQuery.of(context).orientation == Orientation.landscape
+                  ? 2
+                  : 6),
     );
   }
 

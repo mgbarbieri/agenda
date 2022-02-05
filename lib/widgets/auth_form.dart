@@ -5,7 +5,7 @@ import 'package:email_validator/email_validator.dart';
 class AuthForm extends StatefulWidget {
   final void Function(AuthData authData) onSubmit;
 
-  AuthForm(this.onSubmit);
+  const AuthForm(this.onSubmit, {Key? key}) : super(key: key);
   @override
   _AuthFormState createState() => _AuthFormState();
 }
@@ -26,10 +26,10 @@ class _AuthFormState extends State<AuthForm> {
 
   @override
   Widget build(BuildContext context) {
-    FocusNode textFocusNode = new FocusNode();
+    FocusNode textFocusNode = FocusNode();
     return Center(
       child: Card(
-        margin: EdgeInsets.all(20),
+        margin: const EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -40,9 +40,9 @@ class _AuthFormState extends State<AuthForm> {
                   if (_authData.isSignup)
                     TextFormField(
                       textInputAction: TextInputAction.next,
-                      key: ValueKey('name'),
+                      key: const ValueKey('name'),
                       textCapitalization: TextCapitalization.words,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Nome',
                       ),
                       initialValue: _authData.name,
@@ -57,8 +57,8 @@ class _AuthFormState extends State<AuthForm> {
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
-                    key: ValueKey('email'),
-                    decoration: InputDecoration(
+                    key: const ValueKey('email'),
+                    decoration: const InputDecoration(
                       labelText: 'E-mail',
                     ),
                     onChanged: (value) => _authData.email = value,
@@ -75,7 +75,7 @@ class _AuthFormState extends State<AuthForm> {
                     textInputAction: _authData.isLogin
                         ? TextInputAction.done
                         : TextInputAction.next,
-                    key: ValueKey('password'),
+                    key: const ValueKey('password'),
                     decoration: InputDecoration(
                       labelText: 'Senha',
                       suffixIcon: IconButton(
@@ -104,8 +104,8 @@ class _AuthFormState extends State<AuthForm> {
                       keyboardType: TextInputType.text,
                       obscureText: true,
                       textInputAction: TextInputAction.done,
-                      key: ValueKey('passwordConfirmation'),
-                      decoration: InputDecoration(
+                      key: const ValueKey('passwordConfirmation'),
+                      decoration: const InputDecoration(
                         labelText: 'Confirmar Senha',
                       ),
                       validator: (value) {
@@ -115,7 +115,7 @@ class _AuthFormState extends State<AuthForm> {
                         return null;
                       },
                     ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _submit,
                     child: Text(_authData.isLogin ? 'Entrar' : 'Cadastrar'),

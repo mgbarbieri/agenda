@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthScreen extends StatefulWidget {
+  const AuthScreen({Key? key}) : super(key: key);
+
   @override
   _AuthScreenState createState() => _AuthScreenState();
 }
@@ -30,7 +32,7 @@ class _AuthScreenState extends State<AuthScreen> {
         if (!userCredential.user!.emailVerified) {
           _scaffoldKey.currentState!.showSnackBar(
             SnackBar(
-              duration: Duration(seconds: 10),
+              duration: const Duration(seconds: 10),
               action: SnackBarAction(
                 label: 'RE-ENVIAR',
                 onPressed: () async {
@@ -38,7 +40,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 },
                 textColor: Colors.white,
               ),
-              content: Text(
+              content: const Text(
                   'Email da conta não verificado, por favor confirme o cadastro acessando o link enviado ao email'),
               backgroundColor: Theme.of(context).errorColor,
             ),
@@ -65,7 +67,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
         await userCredential.user!.sendEmailVerification();
         _scaffoldKey.currentState!.showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Link de ativação enviado ao email cadastrado'),
             duration: Duration(seconds: 5),
           ),
@@ -105,12 +107,12 @@ class _AuthScreenState extends State<AuthScreen> {
                   if (_isLoading)
                     Positioned.fill(
                       child: Container(
-                        margin: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
+                        margin: const EdgeInsets.all(20),
+                        decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(4)),
                           color: Color.fromRGBO(0, 0, 0, 0.5),
                         ),
-                        child: Center(
+                        child: const Center(
                           child: CircularProgressIndicator(),
                         ),
                       ),

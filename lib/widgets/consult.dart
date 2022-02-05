@@ -11,7 +11,8 @@ class Consult extends StatefulWidget {
   final String? docName;
   final Map week;
 
-  Consult(this.date, this.docId, this.docName, this.week);
+  const Consult(this.date, this.docId, this.docName, this.week, {Key? key})
+      : super(key: key);
 
   @override
   _ConsultState createState() => _ConsultState();
@@ -33,91 +34,87 @@ class _ConsultState extends State<Consult> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: SfCalendar(
-        monthViewSettings: MonthViewSettings(
-            showAgenda: true,
-            numberOfWeeksInView:
-                MediaQuery.of(context).orientation == Orientation.landscape
-                    ? 2
-                    : 6),
-        todayHighlightColor: Colors.blue,
-        view: CalendarView.month,
-        allowedViews: [
-          CalendarView.day,
-          CalendarView.week,
-          CalendarView.month,
-        ],
-        appointmentTimeTextFormat: 'HH:mm',
-        timeSlotViewSettings: TimeSlotViewSettings(timeFormat: 'HH:mm'),
-        onTap: (CalendarTapDetails details) {
-          if (details.targetElement == CalendarElement.appointment) {
-            Meeting consulta = details.appointments!.first;
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return StatefulBuilder(
-                    builder: (BuildContext context, StateSetter setState) {
-                  return AlertDialog(
-                    title: Text("Consulta"),
-                    content: Container(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                              "Gostaria de marcar uma consulta ${DateFormat.yMd('pt').format(details.date!)} as ${DateFormat.Hms().format(consulta.from)} ?"),
-                          DropdownButton(
-                            items: pets
-                                .map((pet) => DropdownMenuItem(
-                                      value: pet['id'].toString(),
-                                      child: Text(pet['petName']),
-                                    ))
-                                .toList(),
-                            value: appointmentPet['id'].toString(),
-                            onChanged: (String? value) {
-                              setState(() {
-                                appointmentPet = pets
-                                    .firstWhere((pet) => pet['id'] == value);
-                              });
-                            },
-                          ),
-                        ],
+    return SfCalendar(
+      monthViewSettings: MonthViewSettings(
+          showAgenda: true,
+          numberOfWeeksInView:
+              MediaQuery.of(context).orientation == Orientation.landscape
+                  ? 2
+                  : 6),
+      todayHighlightColor: Colors.blue,
+      view: CalendarView.month,
+      allowedViews: const [
+        CalendarView.day,
+        CalendarView.week,
+        CalendarView.month,
+      ],
+      appointmentTimeTextFormat: 'HH:mm',
+      timeSlotViewSettings: const TimeSlotViewSettings(timeFormat: 'HH:mm'),
+      onTap: (CalendarTapDetails details) {
+        if (details.targetElement == CalendarElement.appointment) {
+          Meeting consulta = details.appointments!.first;
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                return AlertDialog(
+                  title: const Text("Consulta"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                          "Gostaria de marcar uma consulta ${DateFormat.yMd('pt').format(details.date!)} as ${DateFormat.Hms().format(consulta.from)} ?"),
+                      DropdownButton(
+                        items: pets
+                            .map((pet) => DropdownMenuItem(
+                                  value: pet['id'].toString(),
+                                  child: Text(pet['petName']),
+                                ))
+                            .toList(),
+                        value: appointmentPet['id'].toString(),
+                        onChanged: (String? value) {
+                          setState(() {
+                            appointmentPet =
+                                pets.firstWhere((pet) => pet['id'] == value);
+                          });
+                        },
                       ),
-                    ),
-                    actions: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ElevatedButton(
-                            child: Text("Cancelar"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          ElevatedButton(
-                            child: Text("Confirmar"),
-                            onPressed: () => confirmAppointment(details),
-                          ),
-                        ],
-                      )
                     ],
-                  );
-                });
-              },
-            );
-          }
-        },
-        blackoutDates: off,
-        dataSource: events,
-        minDate: DateTime.now(),
-        maxDate: DateTime.now().add(const Duration(days: 90)),
-      ),
+                  ),
+                  actions: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          child: const Text("Cancelar"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ElevatedButton(
+                          child: const Text("Confirmar"),
+                          onPressed: () => confirmAppointment(details),
+                        ),
+                      ],
+                    )
+                  ],
+                );
+              });
+            },
+          );
+        }
+      },
+      blackoutDates: off,
+      dataSource: events,
+      minDate: DateTime.now(),
+      maxDate: DateTime.now().add(const Duration(days: 90)),
     );
   }
 
   List<Meeting> appointments() {
     List<Meeting> regular = [];
-    final minDate = DateTime.now().add(Duration(hours: 1));
+    final minDate = DateTime.now().add(const Duration(hours: 1));
     final maxDate = minDate.add(const Duration(days: 90));
     var days = maxDate.difference(minDate).inDays;
     DateTime date =
@@ -132,15 +129,15 @@ class _ConsultState extends State<Consult> {
                 eventName: 'Disponível',
                 background: Colors.blue,
                 from: date,
-                to: date.add(Duration(hours: 1))));
+                to: date.add(const Duration(hours: 1))));
           }
 
-          date = date.add(Duration(hours: 1));
+          date = date.add(const Duration(hours: 1));
         }
-        date = date.add(Duration(hours: 14));
+        date = date.add(const Duration(hours: 14));
       } else {
         off.add(DateTime(date.year, date.month, date.day));
-        date = date.add(Duration(days: 1));
+        date = date.add(const Duration(days: 1));
         date = DateTime(date.year, date.month, date.day, 8);
       }
     }
@@ -149,7 +146,7 @@ class _ConsultState extends State<Consult> {
 
   Future<void> confirmAppointment(CalendarTapDetails details) async {
     if (appointmentPet.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           backgroundColor: Colors.red,
           content: Text(
               'A consulta não foi registrada. Por favor adicione um pet antes de agendar uma consulta')));
@@ -187,7 +184,7 @@ class _ConsultState extends State<Consult> {
         .collection('appointments');
 
     await appointmentRef.doc().set(vetAppointment);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('Consulta marcada!'),
       backgroundColor: Colors.blue,
     ));
@@ -215,7 +212,7 @@ class _ConsultState extends State<Consult> {
         appointmentPet = petsList.first;
       });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           backgroundColor: Colors.red,
           content:
               Text('Por favor adicione um pet antes de agendar uma consulta')));

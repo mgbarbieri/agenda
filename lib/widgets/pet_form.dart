@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 class PetForm extends StatefulWidget {
   final void Function(PetData petData) onSubmit;
 
-  PetForm(this.onSubmit);
+  const PetForm(this.onSubmit, {Key? key}) : super(key: key);
   @override
   _PetFormState createState() => _PetFormState();
 }
@@ -33,16 +33,16 @@ class _PetFormState extends State<PetForm> {
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            leading: Icon(Icons.camera_alt),
-            title: Text('Camera'),
+            leading: const Icon(Icons.camera_alt),
+            title: const Text('Camera'),
             onTap: () {
               src = ImageSource.camera;
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: Icon(Icons.photo_album),
-            title: Text('Galeria'),
+            leading: const Icon(Icons.photo_album),
+            title: const Text('Galeria'),
             onTap: () {
               src = ImageSource.gallery;
               Navigator.pop(context);
@@ -77,7 +77,7 @@ class _PetFormState extends State<PetForm> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -88,9 +88,9 @@ class _PetFormState extends State<PetForm> {
                 TextFormField(
                   onChanged: (value) => _petData.name = value,
                   textInputAction: TextInputAction.next,
-                  key: ValueKey('name'),
+                  key: const ValueKey('name'),
                   textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Nome',
                   ),
                 ),
@@ -102,7 +102,7 @@ class _PetFormState extends State<PetForm> {
                         child: Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: DropdownButtonFormField(
-                            key: ValueKey('specie'),
+                            key: const ValueKey('specie'),
                             value: _selectedSpecies,
                             items: species
                                 .map(
@@ -112,7 +112,7 @@ class _PetFormState extends State<PetForm> {
                                   ),
                                 )
                                 .toList(),
-                            hint: Text('Espécie'),
+                            hint: const Text('Espécie'),
                             onChanged: (value) =>
                                 _petData.specie = value.toString(),
                           ),
@@ -122,7 +122,7 @@ class _PetFormState extends State<PetForm> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 8),
                           child: DropdownButtonFormField(
-                            key: ValueKey('sex'),
+                            key: const ValueKey('sex'),
                             value: _selectedGender,
                             items: gender
                                 .map(
@@ -132,7 +132,7 @@ class _PetFormState extends State<PetForm> {
                                   ),
                                 )
                                 .toList(),
-                            hint: Text('Sexo'),
+                            hint: const Text('Sexo'),
                             onChanged: (value) =>
                                 _petData.sex = value.toString(),
                           ),
@@ -144,9 +144,9 @@ class _PetFormState extends State<PetForm> {
                 TextFormField(
                   onChanged: (value) => _petData.race = value,
                   textInputAction: TextInputAction.next,
-                  key: ValueKey('race'),
+                  key: const ValueKey('race'),
                   textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Raça',
                   ),
                 ),
@@ -157,12 +157,11 @@ class _PetFormState extends State<PetForm> {
                       Expanded(
                         child: TextFormField(
                           controller: dateCtl,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Data de nascimento',
                           ),
                           onTap: () async {
-                            FocusScope.of(context)
-                                .requestFocus(new FocusNode());
+                            FocusScope.of(context).requestFocus(FocusNode());
 
                             DateTime? date = await showDatePicker(
                               context: context,
@@ -170,9 +169,10 @@ class _PetFormState extends State<PetForm> {
                               firstDate: DateTime(DateTime.now().year - 100),
                               lastDate: DateTime.now(),
                             );
-                            if (date != null)
+                            if (date != null) {
                               dateCtl.text =
                                   DateFormat('dd-MMM-yyyy').format(date);
+                            }
                             _petData.birthDate = dateCtl.text;
                           },
                         ),
@@ -185,7 +185,7 @@ class _PetFormState extends State<PetForm> {
                               _petData.castrated = value!;
                             });
                           },
-                          title: Text('Castrado?'),
+                          title: const Text('Castrado?'),
                         ),
                       ),
                     ],
@@ -196,9 +196,9 @@ class _PetFormState extends State<PetForm> {
                   child: TextFormField(
                     onChanged: (value) => _petData.history = value,
                     textInputAction: TextInputAction.done,
-                    key: ValueKey('history'),
+                    key: const ValueKey('history'),
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Breve Histórico',
                     ),
                   ),
@@ -228,7 +228,7 @@ class _PetFormState extends State<PetForm> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: ElevatedButton(
-                      onPressed: _submit, child: Text('Cadastrar')),
+                      onPressed: _submit, child: const Text('Cadastrar')),
                 )
               ],
             ),
