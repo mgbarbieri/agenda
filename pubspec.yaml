@@ -36,7 +36,7 @@ dependencies:
   image_picker: ^0.8.1+1
   path: ^1.8.0
   path_provider: ^2.0.2
-  permission_handler: ^8.1.2
+  permission_handler: ^8.3.0
   syncfusion_flutter_calendar: ^19.2.47
   syncfusion_localizations: ^19.2.47
   equatable: ^2.0.3
